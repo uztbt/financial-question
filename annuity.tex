@@ -1,0 +1,134 @@
+\documentclass[11pt]{report}
+
+
+% To set margin width, text height, space for footnotes and all sorts
+% of other settings related to the geometry of the pages in your
+% report, use the 'geometry' package.
+%
+% http://tug.ctan.org/cgi-bin/ctanPackageInformation.py?id=geometry
+
+\usepackage[margin=2cm]{geometry}
+
+% Finally, for various useful tools for mathematics typesetting, use
+% the 'amsmath' package with a few assorted companion packages which
+% provide extra symbols.
+%
+% http://tug.ctan.org/cgi-bin/ctanPackageInformation.py?id=amsmath
+% http://tug.ctan.org/cgi-bin/ctanPackageInformation.py?id=amssymb
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+\title{Answers to Annuity Problems}
+\author{Yuji Tabata}
+\maketitle
+
+\section*{Question 1 (a)}
+\newcommand{\AccumulatedMoney}{\mathit{AccumulatedMoney}}
+
+We will solve this question by dividing into two parts.
+
+\subsection*{Part 1: From 35 to 65}
+You only invest in the investment account and never withdraw from it in this time span.
+Let $x$ be the amount of money you deposit \emph{at the end of each year} through age 65.
+Let $\AccumulatedMoney(x, i)$ be the money in the investment account \emph{at the end of $i$-th year} counting from the 35th birthday.
+So, $\AccumulatedMoney(x, 0)$ is the money in the investment account on the last day of age 35.
+% Let $\Expense$ be the sum of the money you will withdraw from age 66 to 75.
+% The question can be rephrased as: find the minimum $x$ that satisfies the following inequation.
+
+% \begin{equation}
+%   \AccumulatedMoney(x, 31) \ge \Expense \label{eq:1}
+% \end{equation}
+
+Let $r=0.08$ be the annual interest/discount rate for your investment.
+
+\begin{align}
+    \AccumulatedMoney(x, 0) &= x \\
+    \AccumulatedMoney(x, 1) &= (1+r)x + x \\
+    ... \\
+    \AccumulatedMoney(x, i) &= (1+r)^{i}x + (1+r)^{i-1}x + ... + x \label{am:long1}
+\end{align}
+In order to simplify the calculation of $\AccumulatedMoney(x, i)$, let's perform a math trick. First, multiply the both sides of the last equation by $(1+r)$.
+\begin{equation}
+  (1+r)\AccumulatedMoney(x, i) = (1+r)^{i+1}x + (1+r)^{i}x + ... + (1+r)x \label{am:long2}
+\end{equation}
+Then subtract the both sides of \eqref{am:long1} from \eqref{am:long2} as follows.
+\begin{align}
+  r\AccumulatedMoney(x, i) &= (1 + r) ^{i+1}x - x \\
+  \AccumulatedMoney(x, i) &= \frac{(1+r)^{i+1}-1}{r}x \label{am:4}
+\end{align}
+Substitute $i$ with 30.
+\begin{align}
+  \AccumulatedMoney(x, 30) &= \frac{(1 + r)^{31}-1}{r}x
+\end{align}
+
+\subsection*{Part 2: From 66 to 75}
+\newcommand{\LeftOver}{\mathit{LeftOver}}
+
+Let $\LeftOver(i)$ be the money in the investment account \emph{at the end of the $i$-th year} counting from 66.
+So, $\LeftOver(0)$ is the money in the investment account on the last day of age 66, and $\LeftOver(9)$ is that on the last day of age 75.
+Remember that we withdraw \$50,000 plus some money \emph{on each birthday} and the interest/discount rate only applies to the leftover money.
+Let $y$ be 50000 and $g$ be 0.04.
+
+\begin{align}
+  \LeftOver(0) &= (1+r)(\AccumulatedMoney(x, 30) - y) \\
+  \LeftOver(1) &= (1+r)(\LeftOver(0) - (1+g)y) \nonumber \\
+  &= (1+r)^2(\AccumulatedMoney(x, 30) - y) - (1+r)(1+g)y \\
+  \LeftOver(2) &= (1+r)(\LeftOver(1) - (1+g)^2y) \nonumber \\
+               &= (1+r)^3(\AccumulatedMoney(x, 30) - y) - (1+r)^2(1+g)y - (1+r)(1+g)^2y \\
+  ... \\
+  \LeftOver(i) &= (1+r)^{i+1}(\AccumulatedMoney(x, 30) - y) \nonumber\\
+  &- (1+r)^i(1+g)y - (1+r)^{i-1}(1+g)^2y - ... - (1+r)(1+g)^iy \label{lo:1}
+\end{align}
+
+Do the trick again. This time, multiply the both sides with $\frac{1+g}{1+r}$. I came up with this coefficient by observing the structure of \eqref{lo:1}.
+
+\begin{align}
+  \frac{1+g}{1+r}\LeftOver(i) &= (1+g)(1+r)^i(\AccumulatedMoney(x, 30) - y) \nonumber\\
+  &- (1+r)^{i-1}(1+g)^2y - (1+r)^{i-2}(1+g)^3y - ... - (1+g)^{i+1}y \label{lo:2}
+\end{align}
+
+Let's subtract \eqref{lo:2} from \eqref{lo:1}.
+
+\begin{align}
+  (1-\frac{1+g}{1+r})\LeftOver(i) &= (1+r)^i\{(1+r)-(1+g)\}(\AccumulatedMoney(x, 30) - y) \nonumber \\
+  &- (1+r)^i(1+g)y + (1+g)^{i+1}y \nonumber \\
+  \frac{r-g}{1+r}\LeftOver(i) &= (1+r)^i(r-g)(\AccumulatedMoney(x, 30) - y) - (1+g)y\{(1+r)^i - (1+g)^i\} \nonumber \\
+  \LeftOver(i) &= (1+r)^{i+1}(\AccumulatedMoney(x, 30) - y) - \frac{1+r}{r-g}(1+g)y\{(1+r)^i - (1+g)^i\}\label{lo:3}
+\end{align}
+
+The original problem can be rephrased as: find the minimum $x$ where $\LeftOver(9) \ge 0$, i.e. find the lowest amount of investment money so that you can withdraw as you planned until the age of 75.
+Substitute 9 for $i$, 0.08 for $r$, 50000 for $y$, and 0.04 for $g$ as you go.
+
+\begin{align}
+  \LeftOver(9) &\ge 0 \nonumber \\ 
+  (1+r)^{10}(\AccumulatedMoney(x, 30) - y) - \frac{1+r}{r-g}(1+g)y\{(1+r)^9 - (1+g)^9\} &\ge 0 \nonumber \\
+  (1+r)^{10}(\frac{(1 + r)^{31}-1}{r}x - y) - \frac{1+r}{r-g}(1+g)y\{(1+r)^9 - (1+g)^9\} &\ge 0 \label{for:b}\\
+  1.08^{10}(\frac{(1.08)^{31}-1}{0.08}x - 50000) - \frac{1.08}{0.04}(1.04)50000(1.08^9 - 1.04^9) &\ge 0 \nonumber\\
+  1.08^{10}\frac{(1.08)^{31}-1}{0.08}x \ge 1.08^{10}\times50000 + \frac{1.08}{0.04}(1.04)50000(1.08^9 - 1.04^9) \nonumber\\
+  266.29x \ge 107950 +808268 \nonumber\\
+  266.29x \ge 916218 \nonumber\\
+  x \ge 3440
+\end{align}
+
+We have got to the conclusion that you have to deposit \$3440 each year through from age 35 until 65 in order to receive \$50,000 plus some extra money from age 66 until age 75.
+
+\section*{Question 1 (b)}
+Substitute 0.09 for $r$ in \eqref{for:b}.
+
+\begin{align}
+  \LeftOver(9) &\ge 0 \nonumber \\ 
+  (1+r)^{10}(\frac{(1 + r)^{31}-1}{r}x - y) - \frac{1+r}{r-g}(1+g)y\{(1+r)^9 - (1+g)^9\} &\ge 0 \nonumber\\
+  1.09^{10}(\frac{1.09^{31}-1}{0.09}x - 50000) - \frac{1.09}{0.05}(1.04)50000(1.09^9 - 1.04^9) &\ge 0 \nonumber
+\end{align}
+\begin{align}
+  1.09^{10}\frac{1.09^{31}-1}{0.09}x &\ge 1.09^{10}\times50000 + \frac{1.09}{0.05}(1.04)50000(1.09^9 - 1.04^9) \nonumber\\
+  354.10x &\ge 118368 + 703472 \nonumber \\
+  x &\ge \frac{821840}{354.10} \nonumber \\
+  x &\ge 2320
+\end{align}
+  
+We have got to the conclusion that you have to deposit \$2320 each year if the interest rate is 0.09.
+
+\end{document}
